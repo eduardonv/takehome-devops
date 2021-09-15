@@ -1,0 +1,100 @@
+Execução local
+
+- Instalado o minikube, docker,
+- Feito o build dos serviços auth e feed
+	docker build -t eduardonv/auth .
+	docker build -t eduardonv/feed .
+
+- enviada a imagem para o docker hub
+	docker push eduardonv/auth
+	docker push eduardonv/feed
+
+- feito o deployment dos serviços no kubernetes, em seus respectivos diretorios estão os arquivos de deployment
+	minikube kubectl -- apply -f deployment.yaml
+	minikube kubectl -- apply -f service.yaml
+
+- configurado port-forward do kubernetes para comunicacao com os serviços 
+	minikube kubectl -- port-forward service/auth-service 8037:8037
+	minikube kubectl -- port-forward service/feed-service 3000:3000
+
+- executado o comando curl com o resultado abaixo
+eduardo@SPCBRN318:~/takehome-devops/services$ curl -H "Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0" -v localhost:3000/feed/premium
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+>Handling connection for 3000
+ GET /feed/premium HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/7.58.0
+> Accept: */*
+> Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0
+>
+< HTTP/1.1 403 Forbidden
+< Date: Wed, 15 Sep 2021 12:11:04 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+<
+* Connection #0 to host localhost left intact
+
+##################################
+eduardo@SPCBRN318:~/takehome-devops/services$ curl -H "Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0" -v localhost:3000/feed/patriota
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+> GET /feed/patriota HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/7.58.0
+> Accept: */*
+> Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0
+>
+Handling connection for 3000
+< HTTP/1.1 200 OK
+< Date: Wed, 15 Sep 2021 12:11:30 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+<
+* Connection #0 to host localhost left intact
+{"last-update":"2020-05-24","id":"patriota","posts":[{"user":"Brasil Paralelo - Lives","type":"video","url":"bp://lives/boa-noite-membro-01","summary":"Teremos nesta edição de \"Boa Noite, Membro!\" participação do prof. Clístenes"},{"user":"Brasil Paralelo","type":"image","url":"bp://ads/01","summary":"Torne-se agora um membro premium com 10% de desconto"},{"user":"Brasil Paralelo - Tech","type":"image","url":"bp://memes/01","summary":"Caros membros, acabamos de lançar o recurso de salvar vídeos na plataforma!"}]}eduardo@SPCBRN318:~/takehome-devops/services$
+##################################
+eduardo@SPCBRN318:~/takehome-devops/services$ curl -H "Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0" -v localhost:3000/feed/patriota
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+> GET /feed/patriota HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/7.58.0
+> Accept: */*
+> Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0
+>
+Handling connection for 3000
+< HTTP/1.1 200 OK
+< Date: Wed, 15 Sep 2021 12:11:30 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+<
+* Connection #0 to host localhost left intact
+{"last-update":"2020-05-24","id":"patriota","posts":[{"user":"Brasil Paralelo - Lives","type":"video","url":"bp://lives/boa-noite-membro-01","summary":"Teremos nesta edição de \"Boa Noite, Membro!\" participação do prof. Clístenes"},{"user":"Brasil Paralelo","type":"image","url":"bp://ads/01","summary":"Torne-se agora um membro premium com 10% de desconto"},{"user":"Brasil Paralelo - Tech","type":"image","url":"bp://memes/01","summary":"Caros membros, acabamos de lançar o recurso de salvar vídeos na plataforma!"}]}eduardo@SPCBRN318:~/takehome-devops/services$
+##################################
+eduardo@SPCBRN318:~/takehome-devops/services$ curl -H "Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0" -v localhost:3000/feed/patriota
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to localhost (127.0.0.1) port 3000 (#0)
+> GET /feed/patriota HTTP/1.1
+> Host: localhost:3000
+> User-Agent: curl/7.58.0
+> Accept: */*
+> Authorization: Bearer 66ec51ac-72ea-479d-8b5f-d99eede929f0
+>
+Handling connection for 3000
+< HTTP/1.1 200 OK
+< Date: Wed, 15 Sep 2021 12:11:30 GMT
+< Connection: keep-alive
+< Keep-Alive: timeout=5
+< Transfer-Encoding: chunked
+<
+* Connection #0 to host localhost left intact
+{"last-update":"2020-05-24","id":"patriota","posts":[{"user":"Brasil Paralelo - Lives","type":"video","url":"bp://lives/boa-noite-membro-01","summary":"Teremos nesta edição de \"Boa Noite, Membro!\" participação do prof. Clístenes"},{"user":"Brasil Paralelo","type":"image","url":"bp://ads/01","summary":"Torne-se agora um membro premium com 10% de desconto"},{"user":"Brasil Paralelo - Tech","type":"image","url":"bp://memes/01","summary":"Caros membros, acabamos de lançar o recurso de salvar vídeos na plataforma!"}]}eduardo@SPCBRN318:~/takehome-devops/services$
+

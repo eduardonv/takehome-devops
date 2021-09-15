@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+spec:
+  selector:
+    matchLabels:
+      app: server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: server
+    spec:
+      containers:
+      - name: auth
+        image: eduardonv/auth:latest
+        ports:
+        - containerPort: 8037
+      imagePullSecrets:
+      - name: docregkey

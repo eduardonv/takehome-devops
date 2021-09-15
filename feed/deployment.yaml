@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed
+spec:
+  selector:
+    matchLabels:
+      app: feed-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: feed-server
+    spec:
+      containers:
+      - name: feed
+        image: eduardonv/feed:latest
+        ports:
+         - containerPort: 3000
+      imagePullSecrets:
+      - name: docregkey
